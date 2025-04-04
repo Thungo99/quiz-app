@@ -10,13 +10,14 @@
       background-color: #f0f0f0;
       padding: 30px;
     }
-    form {
+    form, .question-list {
       background: #fff;
       padding: 20px;
       border-radius: 10px;
       max-width: 800px;
       margin: auto;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
     }
     textarea, input[type="text"], input[type="file"] {
       width: 100%;
@@ -44,15 +45,14 @@
       font-size: 14px;
     }
     button {
-      padding: 12px 20px;
+      padding: 10px 16px;
       background-color: #007acc;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
-      font-size: 16px;
-      margin-top: 10px;
+      font-size: 15px;
     }
     button:hover {
       background-color: #005fa3;
@@ -61,6 +61,35 @@
       max-width: 100%;
       margin: 10px 0;
       border-radius: 6px;
+    }
+    .question-item {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      background: #fff;
+    }
+    .question-item textarea, .question-item input[type="text"] {
+      width: 100%;
+      margin: 5px 0;
+    }
+    .question-item img {
+      max-width: 100%;
+      border-radius: 6px;
+      margin: 8px 0;
+    }
+    .question-item .answer-block {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .delete-btn {
+      background-color: #e74c3c;
+      margin-top: 10px;
+    }
+    .delete-btn:hover {
+      background-color: #c0392b;
     }
   </style>
 </head>
@@ -84,13 +113,87 @@
     <button type="submit">Save Question</button>
   </form>
 
+  <div class="question-list" id="questionList">
+    <h2>Saved Questions</h2>
+  </div>
+
   <script>
     const form = document.getElementById('questionForm');
     const imageInput = document.getElementById('imageUpload');
     const imagePreview = document.getElementById('imagePreview');
+    const questionList = document.getElementById('questionList');
     let imageData = "";
 
-    // Load preview image
+    function getStoredQuestions() {
+      return JSON.parse(localStorage.getItem("customQuestions")) || JSON.parse(localStorage.getItem("questions")) || [];
+    }
+
+    function saveQuestions(data) {
+      localStorage.setItem("customQuestions", JSON.stringify(data));
+    }
+
+    function renderQuestions() {
+      const data = getStoredQuestions();
+      questionList.innerHTML = '<h2>Saved Questions</h2>';
+      data.forEach((q, index) => {
+        const div = document.createElement("div");
+        div.className = "question-item";
+
+        const textarea = document.createElement("textarea");
+        textarea.value = q.question;
+        textarea.onchange = e => {
+          data[index].question = e.target.value;
+          saveQuestions(data);
+        };
+        div.appendChild(textarea);
+
+        if (q.image) {
+          const img = document.createElement("img");
+          img.src = q.image;
+          div.appendChild(img);
+        }
+
+        q.answers.forEach((ans, i) => {
+          const block = document.createElement("div");
+          block.className = "answer-block";
+          const input = document.createElement("input");
+          input.type = "text";
+          input.value = ans;
+          input.onchange = e => {
+            data[index].answers[i] = e.target.value;
+            saveQuestions(data);
+          };
+
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = `correct_${index}`;
+          radio.checked = q.correct === i;
+          radio.onclick = () => {
+            data[index].correct = i;
+            saveQuestions(data);
+          };
+
+          block.appendChild(radio);
+          block.appendChild(input);
+          div.appendChild(block);
+        });
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.className = "delete-btn";
+        deleteBtn.onclick = () => {
+          if (confirm("Bạn có chắc chắn muốn xóa câu hỏi này không?")) {
+            data.splice(index, 1);
+            saveQuestions(data);
+            renderQuestions();
+          }
+        };
+
+        div.appendChild(deleteBtn);
+        questionList.appendChild(div);
+      });
+    }
+
     imageInput.addEventListener("change", function(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -103,7 +206,6 @@
       reader.readAsDataURL(file);
     });
 
-    // Save question
     form.addEventListener("submit", function(e) {
       e.preventDefault();
       const question = document.getElementById("questionText").value.trim();
@@ -124,21 +226,18 @@
         image: imageData
       };
 
-      // Load từ cả 2 key và merge lại nếu cần
-      let existing = JSON.parse(localStorage.getItem("customQuestions")) || [];
-      const fallback = JSON.parse(localStorage.getItem("questions")) || [];
-      if (existing.length === 0 && fallback.length > 0) {
-        existing = fallback;
-      }
-
+      const existing = getStoredQuestions();
       existing.push(newQuestion);
-      localStorage.setItem("customQuestions", JSON.stringify(existing));
+      saveQuestions(existing);
       alert("Đã lưu câu hỏi!");
       form.reset();
       imagePreview.src = '';
       imagePreview.style.display = 'none';
       imageData = "";
+      renderQuestions();
     });
+
+    renderQuestions();
   </script>
 </body>
 </html>
