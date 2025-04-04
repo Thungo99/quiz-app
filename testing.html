@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Testing Mode</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #d6c28e;
+      padding: 30px;
+    }
+    .question-block {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    img {
+      max-width: 100%;
+      margin-bottom: 15px;
+      border-radius: 6px;
+    }
+    .question {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      padding: 8px;
+      margin-bottom: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #f9f9f9;
+    }
+    .correct {
+      background-color: #d4edda !important;
+      border-color: #28a745 !important;
+    }
+    .wrong {
+      background-color: #f8d7da !important;
+      border-color: #dc3545 !important;
+    }
+    .score {
+      font-size: 20px;
+      text-align: center;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #2e7d32;
+    }
+    button {
+      padding: 10px 20px;
+      display: block;
+      margin: 30px auto;
+      font-size: 16px;
+      border: none;
+      background-color: #007acc;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005b99;
+    }
+  </style>
+</head>
+<body>
+  <h2>Testing Mode - Quiz 20 Câu</h2>
+  <div id="quiz"></div>
+  <button onclick="submitTest()">Nộp bài</button>
+  <div class="score" id="score"></div>
+
+  <script>
+    const questions = JSON.parse(localStorage.getItem("customQuestions")) || [];
+    const quizContainer = document.getElementById("quiz");
+    let userAnswers = [];
+
+    questions.slice(0, 20).forEach((q, index) => {
+      const block = document.createElement("div");
+      block.className = "question-block";
+
+      if (q.image) {
+        const img = document.createElement("img");
+        img.src = q.image;
+        block.appendChild(img);
+      }
+
+      const questionText = document.createElement("div");
+      questionText.className = "question";
+      questionText.textContent = `Câu ${index + 1}: ${q.question}`;
+      block.appendChild(questionText);
+
+      q.answers.forEach((answer, i) => {
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = `q${index}`;
+        input.value = i;
+        input.onclick = () => {
+          userAnswers[index] = parseInt(input.value);
+        };
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(" " + answer));
+        block.appendChild(label);
+      });
+
+      quizContainer.appendChild(block);
+    });
+
+    function submitTest() {
+      let score = 0;
+      questions.slice(0, 20).forEach((q, index) => {
+        const block = quizContainer.children[index];
+        const selected = userAnswers[index];
+        const labels = block.querySelectorAll("label");
+        labels.forEach((label, i) => {
+          label.classList.remove("correct", "wrong");
+          if (i === q.correct) label.classList.add("correct");
+          else if (i === selected) label.classList.add("wrong");
+        });
+        if (selected === q.correct) score++;
+      });
+      document.getElementById("score").textContent = `Bạn đã trả lời đúng ${score}/${questions.slice(0, 20).length} câu.`;
+    }
+  </script>
+</body>
+</html>
