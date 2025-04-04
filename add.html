@@ -125,7 +125,14 @@
     let imageData = "";
 
     function getStoredQuestions() {
-      return JSON.parse(localStorage.getItem("customQuestions")) || JSON.parse(localStorage.getItem("questions")) || [];
+      const fromCustom = JSON.parse(localStorage.getItem("customQuestions") || "[]");
+      const fromLegacy = JSON.parse(localStorage.getItem("questions") || "[]");
+      if (fromCustom.length === 0 && fromLegacy.length > 0) {
+        // Auto migrate
+        localStorage.setItem("customQuestions", JSON.stringify(fromLegacy));
+        return fromLegacy;
+      }
+      return fromCustom;
     }
 
     function saveQuestions(data) {
