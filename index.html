@@ -33,12 +33,12 @@
       position: relative;
     }
     .hero img {
-      width: 80%;
-      max-width: 600px;
+      width: 95%; /* tăng chiều ngang */
+      max-width: 1200px;
       border-radius: 10px;
+      display: block;
+      margin: 0 auto;
     }
-
-    /* Hiệu ứng xuất hiện */
     @keyframes fadeInUp {
       from {
         opacity: 0;
@@ -49,7 +49,6 @@
         transform: translate(-50%, 0);
       }
     }
-
     .hero-text {
       position: absolute;
       left: 50%;
@@ -63,7 +62,6 @@
       opacity: 0;
       animation: fadeInUp 1.2s ease-out 0.5s forwards;
     }
-
     .features {
       display: flex;
       justify-content: space-around;
