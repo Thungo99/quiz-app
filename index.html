@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Thư Ngô - Quiz App</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
   <style>
@@ -27,19 +27,20 @@
     .active {
       color: #B8860B;
     }
-    .hero {
-      text-align: center;
-      margin: 30px 0 60px;
-      position: relative;
-    }
-    .hero img {
-      width: 80%;
-      max-width: 800px;
-      height: auto;
+
+    /* HERO BANNER VỚI BACKGROUND ẢNH */
+    .hero-bg {
+      background-image: url('image1.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 320px;
       border-radius: 10px;
-      display: block;
-      margin: 0 auto;
+      margin: 40px auto 60px;
+      max-width: 90%;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
+
     @keyframes fadeInUp {
       from {
         opacity: 0;
@@ -50,6 +51,7 @@
         transform: translate(-50%, 0);
       }
     }
+
     .hero-text {
       position: absolute;
       left: 50%;
@@ -63,6 +65,7 @@
       opacity: 0;
       animation: fadeInUp 1.2s ease-out 0.5s forwards;
     }
+
     .features {
       display: flex;
       justify-content: space-around;
@@ -94,8 +97,7 @@
     </nav>
   </header>
 
-  <div class="hero">
-    <img src="image1.jpg" alt="Ảnh 1" />
+  <div class="hero-bg">
     <div class="hero-text">TRY TO TEST AND GET HIGH SCORE</div>
   </div>
 
