@@ -11,6 +11,7 @@
       margin: 0;
       padding: 0;
     }
+
     header {
       display: flex;
       justify-content: space-between;
@@ -18,25 +19,25 @@
       padding: 20px;
       border-bottom: 1px solid #ccc;
     }
+
     nav a {
       margin: 0 15px;
       text-decoration: none;
       color: black;
       font-weight: bold;
     }
+
     .active {
       color: #B8860B;
     }
 
-    /* HERO BANNER VỚI BACKGROUND ẢNH */
     .hero-bg {
-      background-image: url('image1.jpg');
-      background-position: center;
-      border-radius: 10px;
       margin: 20px auto 40px;
       max-width: 50%;
       position: relative;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      border-radius: 10px;
+      overflow: hidden;
     }
 
     @keyframes fadeInUp {
@@ -70,9 +71,11 @@
       margin-top: 40px;
       text-align: center;
     }
+
     .features div {
       width: 30%;
     }
+
     .features button {
       background-color: #d2c08c;
       border: none;
@@ -96,6 +99,7 @@
   </header>
 
   <div class="hero-bg">
+    <img src="image1.jpg" alt="Banner" style="width: 100%; display: block;">
     <div class="hero-text">TRY TO TEST AND GET HIGH SCORE</div>
   </div>
 
